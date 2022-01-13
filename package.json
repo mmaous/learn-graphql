@@ -1,0 +1,20 @@
+{
+  "name": "learn-graphql",
+  "version": "1.0.0",
+  "description": "This project is the first project i made with graphql, my aim is to test the technology and see if it great for my next project!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "graphql",
+    "Apollo"
+  ],
+  "author": "Mhand",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.6.1",
+    "apollo-server-core": "^3.6.1",
+    "graphql": "^16.2.0"
+  }
+}
