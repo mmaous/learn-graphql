@@ -1,5 +1,7 @@
-const { ApolloServer, gql} = require('apollo-server');
+const { ApolloServer, UserInputError, gql} = require('apollo-server');
 const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
+const { v1: uuid} = require('uuid');
+
 
 //* data
 let persons = [
@@ -43,6 +45,15 @@ const typeDefs = gql`
     allPersons: [Person!]!
     findPerson(name: String!): Person
   }
+
+  type Mutation {
+    addPerson (
+      name: String!
+      phone: String
+      street: String!
+      city: String!
+    ) : Person
+  }
 `;
 
 //*Resolvers
@@ -59,6 +70,19 @@ const resolvers = {
         city: root.city 
       }
     }
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+
+      if (persons.find(p => p.name === args.name)) {
+        throw new UserInputError('Name must be Unique', {
+          invalidArgs: args.name,
+        })
+      }
+      const person = {...args, id: uuid()}
+      persons.concat(person)
+      return person;
+    }
   }
 }
 
@@ -70,6 +94,7 @@ const server = new ApolloServer({
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ]
 })
+
 
 /** 
 * @listens on the server (defaultPort= 4000)
