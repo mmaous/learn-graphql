@@ -48,7 +48,7 @@ const typeDefs = gql`
   type Query {
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
-    findPerson(name: String!): Person
+    findPerson(name: String!): Person!
   }
 
   type Mutation {
@@ -57,6 +57,10 @@ const typeDefs = gql`
       phone: String
       street: String!
       city: String!
+    ) : Person
+    editNumber (
+      name: String!
+      phone: String!
     ) : Person
   }
 `;
@@ -93,6 +97,17 @@ const resolvers = {
       const person = {...args, id: uuid()}
       persons.concat(person)
       return person;
+    },
+
+    editNumber: (root, args) => {
+      const person = persons.find(p => p.name === args.name);
+
+      if (!person) {
+        throw new UserInputError (`No one with the name ${args.name} is available`);
+      } 
+      const updatePerson = {...person, phone: args.phone};
+      persons = persons.map(p => p.name !== args.name ? p : updatePerson )
+      return updatePerson;
     }
   }
 }
