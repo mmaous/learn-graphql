@@ -1,70 +1,54 @@
-import { gql, useMutation } from '@apollo/client';
-import React, { useState } from 'react'
+import { useMutation } from '@apollo/client';
+import React, { useState } from 'react';
+import { ALL_PERSONS, CREATE_PERSON } from '../queries';
 
-const CREATE_PERSON = gql`
-  mutation createPerson(
-    $name: String!
-    $street: String!
-    $city: String!
-    $phone: String
-  ) {
-    addPErson(name: $name, street: $street, city: $city, phone: $phone) {
-      name
-      phone
-      id
-      address {
-        street
-        city
-      }
-    }
-  }
-`;
 
 const PersonForm = () => {
-   const [name, setName] = useState('');
-   const [phone, setPhone] = useState('');
-   const [street, setStreet] = useState('');
-   const [city, setCity] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
 
+  const [createPerson] = useMutation(CREATE_PERSON, {
+    refetchQueries: [{ query: ALL_PERSONS }]
+  });
+  const submit = (event) => {
+    event.preventDefault();
 
-   const [createPerson] = useMutation(CREATE_PERSON);
-
-   const submit = (event) => {
-     event.preventDefault();
-
-     createPerson({ variables: { name, phone, city, street }});
-     setName('');
-     setPhone('');
-     setStreet('');
-     setCity('');
-   }
+    createPerson({ variables: { name, phone, city, street } })
+    setName('');
+    setPhone('');
+    setStreet('');
+    setCity('');
+  };
 
   return (
     <div>
       <form onSubmit={submit}>
+        <h2>Add Person :</h2>
         <div>
-          name{' '}
+          name
           <input
             value={name}
             onChange={({ target }) => setName(target.value)}
           />
         </div>
         <div>
-          phone{' '}
+          phone
           <input
             value={phone}
             onChange={({ target }) => setPhone(target.value)}
           />
         </div>
         <div>
-          street{' '}
+          street
           <input
             value={street}
             onChange={({ target }) => setStreet(target.value)}
           />
         </div>
         <div>
-          city{' '}
+          city
           <input
             value={city}
             onChange={({ target }) => setCity(target.value)}
@@ -74,6 +58,6 @@ const PersonForm = () => {
       </form>
     </div>
   );
-}
+};
 
-export default PersonForm
+export default PersonForm;

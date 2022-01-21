@@ -94,6 +94,7 @@ const resolvers = {
           invalidArgs: args.name,
         })
       }
+      
       const person = {...args, id: uuid()}
       persons.concat(person)
       return person;

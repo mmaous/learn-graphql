@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { gql, useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
+import { FIND_PERSON } from '../queries';
 
-const FIND_PERSON = gql`
-  query findPersonByName($nameToSearch: String!) {
-    findPerson(name: $nameToSearch) {
-      name
-      phone
-      id
-      address {
-        street
-        city
-      }
-    }
-  }
-`;
 
 const Persons = ({ persons }) => {
   const [person, setPerson] = useState(null);
   const [getPerson, result] = useLazyQuery(FIND_PERSON);
-    useEffect(() => {
+    
+  useEffect(() => {
       if (result.data) {
         setPerson(result.data.findPerson);
       }
     }, [result.data]);
+
+    console.log(persons);
   
 
   const showPerson = (name) => {
