@@ -67,9 +67,9 @@ const resolvers = {
         return Person.find({});
       }
 
-      return Person.find({ phone: { $exists: args.phone === 'YES' }});
+      return Person.find({ phone: { $exists: args.phone === 'YES' } });
     },
-    findPerson:  (root, args) => Person.findOne({ name: args.name }),
+    findPerson: (root, args) => Person.findOne({ name: args.name }),
   },
   Person: {
     address: (root) => {
@@ -80,11 +80,16 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: (root, args) => {
+    addPerson: async (root, args) => {
       const person = new Person({ ...args });
-      const saved = person.save();
-      saved.catch((err) => console.error(err.message));
-      return saved;
+      try {
+        await person.save();
+      } catch (error) {
+        throw new UserInputError(err.message, {
+          invalidArgs: args,
+        });
+      }
+      return person;
     },
 
     editNumber: async (root, args) => {
@@ -96,10 +101,18 @@ const resolvers = {
         );
       }
       person.phone = args.phone;
+      let updatedPerson = null;
 
-      return Person.findByIdAndUpdate(person._id, person, {
-        new: true,
-      });
+      try {
+        updatedPerson = await Person.findByIdAndUpdate(person._id, person, {
+          new: true,
+        });
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        });
+      }
+      return updatedPerson;
     },
   },
 };
