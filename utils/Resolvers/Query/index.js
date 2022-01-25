@@ -13,4 +13,6 @@ const allPersons = async (root, args) => {
 
 const findPerson = (root, args) => Person.findOne({ name: args.name });
 
-module.exports = { findPerson, allPersons, personCount };
+const me = (root, args, context) => context.currentUser;
+
+module.exports = { findPerson, allPersons, personCount, me };

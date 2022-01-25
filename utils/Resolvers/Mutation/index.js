@@ -1,16 +1,25 @@
 const Person = require('../../../models/person');
 const User = require('../../../models/user');
-const { UserInputError } = require('apollo-server');
+const { UserInputError, AuthenticationError } = require('apollo-server');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const addPerson = async (root, args) => {
+const addPerson = async (root, args, context) => {
   const person = new Person({ ...args });
+  const currentUser = context.currentUser;
+
+  if (!currentUser) {
+    throw new AuthenticationError('not authenicated');
+  }
   try {
+    const user = User.findOne({username: currentUser.username })
+
     await person.save();
+    user.friends = user.friends.concat(person);
+    await user.save();
   } catch (error) {
-    throw new UserInputError(err.message, {
+    throw new UserInputError(error.message, {
       invalidArgs: args,
     });
   }

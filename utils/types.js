@@ -39,10 +39,10 @@ const typeDefs = gql`
       street: String!
       city: String!
     ): Person
-    editNumber(name: String!, phone: String!): Person
+    editNumber(name: String!, phone: String!): Person 
     createUser(username: String!): User
-
     login(username: String!, password: String!): Token
+    addAsFriend(name: String!): User
   }
 `;
 module.exports = typeDefs;
