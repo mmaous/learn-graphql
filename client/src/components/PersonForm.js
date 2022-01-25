@@ -3,16 +3,19 @@ import React, { useState } from 'react';
 import { ALL_PERSONS, CREATE_PERSON } from '../queries';
 
 
-const PersonForm = () => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [street, setStreet] = useState('');
-  const [city, setCity] = useState('');
+const PersonForm = ({ setError }) => {
+  const [name, setName] = useState('Jim');
+  const [phone, setPhone] = useState('3242-445-422');
+  const [street, setStreet] = useState('21 st Gzrfield ');
+  const [city, setCity] = useState('New York');
 
-  const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [{ query: ALL_PERSONS }]
+  const [ createPerson ] = useMutation(CREATE_PERSON, {
+    refetchQueries: [{ query: ALL_PERSONS }],
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message)
+    }
   });
-  const submit = (event) => {
+  const submit =  (event) => {
     event.preventDefault();
 
     createPerson({ variables: { name, phone, city, street } })
@@ -21,6 +24,8 @@ const PersonForm = () => {
     setStreet('');
     setCity('');
   };
+  
+ 
 
   return (
     <div>

@@ -4,7 +4,7 @@
   "description": "This project is the first project i made with graphql, my aim is to test the technology and see if it great for my next project!",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon server.js"
   },
   "keywords": [
     "graphql",
@@ -15,7 +15,10 @@
   "dependencies": {
     "apollo-server": "^3.6.1",
     "apollo-server-core": "^3.6.1",
-    "graphql": "^16.2.0"
+    "dotenv": "^14.3.0",
+    "graphql": "^16.2.0",
+    "mongoose": "^5.13.0",
+    "mongoose-unique-validator": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
