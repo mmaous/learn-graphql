@@ -11,8 +11,12 @@ const allPersons = async (root, args) => {
   return Person.find({ phone: { $exists: args.phone === 'YES' } });
 };
 
-const findPerson = (root, args) => Person.findOne({ name: args.name });
+const findPerson = (root, args) => {
+  return Person.findOne({ name: args.name });
+};
 
-const me = (root, args, context) => context.currentUser;
+const me = (root, args, context) => {
+  return context.currentUser;
+};
 
 module.exports = { findPerson, allPersons, personCount, me };

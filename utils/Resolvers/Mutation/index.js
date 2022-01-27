@@ -10,11 +10,12 @@ const addPerson = async (root, args, context) => {
   const currentUser = context.currentUser;
 
   if (!currentUser) {
-    throw new AuthenticationError('not authenicated');
+    throw new AuthenticationError('not authenticated');
   }
-  try {
-    const user = User.findOne({username: currentUser.username })
 
+  try {
+    const user = await User.findOne({ username: currentUser.username });
+    console.log(user);
     await person.save();
     user.friends = user.friends.concat(person);
     await user.save();
@@ -74,4 +75,21 @@ const login = async (root, args) => {
   return { value: jwt.sign(userForToken, JWT_SECRET) };
 };
 
-module.exports = { addPerson, editNumber, createUser, login };
+const addAsFriend = async (root, args, { currentUser }) => {
+
+  const nonFriendAlready = (person) =>
+    !currentUser.friends.map((f) => f._id).includes(person._id);
+  if (!currentUser) {
+    throw new AuthenticationError('not authenticated');
+  }
+  const person = await Person.findOne({ name: args.name });
+  if (nonFriendAlready(person)) {
+    currentUser.friends = currentUser.friends.concat(person);
+  }
+
+  await currentUser.save();
+
+  return currentUser;
+};
+
+module.exports = { addPerson, editNumber, createUser, login, addAsFriend };
