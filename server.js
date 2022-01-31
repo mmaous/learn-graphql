@@ -15,7 +15,7 @@ const User = require('./models/user');
 const DB_URL = process.env.MONGODB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-console.log('connecting to ', DB_URL);
+console.log('connecting to db...', );
 
 mongoose
   .connect(DB_URL, {

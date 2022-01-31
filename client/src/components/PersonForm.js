@@ -2,30 +2,43 @@ import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { ALL_PERSONS, CREATE_PERSON } from '../queries';
 
-
 const PersonForm = ({ setError }) => {
-  const [name, setName] = useState('Jim');
+  const [name, setName] = useState('Jimes');
   const [phone, setPhone] = useState('3242-445-422');
   const [street, setStreet] = useState('21 st Gzrfield ');
   const [city, setCity] = useState('New York');
 
-  const [ createPerson ] = useMutation(CREATE_PERSON, {
+  const [createPerson] = useMutation(CREATE_PERSON, {
     refetchQueries: [{ query: ALL_PERSONS }],
     onError: (error) => {
-      setError(error.graphQLErrors[0].message)
-    }
+      setError(error.graphQLErrors[0].message);
+    },
+    update: (store, response) => {
+      try {
+        const dataInStore = store.readQuery({ query: ALL_PERSONS });
+        store.writeQuery({
+          query: ALL_PERSONS,
+          data: {
+            ...dataInStore,
+            allPersons: [...dataInStore.allPersons, response.data.addPerson],
+          },
+        });
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
   });
-  const submit =  (event) => {
+  const submit = (event) => {
     event.preventDefault();
 
-    createPerson({ variables: { name, phone, city, street } })
+    createPerson({
+      variables: { name, city, street, phone: phone.length > 0 ? phone : null },
+    });
     setName('');
     setPhone('');
     setStreet('');
     setCity('');
   };
-  
- 
 
   return (
     <div>
