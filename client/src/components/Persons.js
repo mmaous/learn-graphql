@@ -13,9 +13,6 @@ const Persons = ({ persons }) => {
       }
     }, [result.data]);
 
-    console.log(persons);
-  
-
   const showPerson = (name) => {
     getPerson({ variables: { nameToSearch: name } });
   };

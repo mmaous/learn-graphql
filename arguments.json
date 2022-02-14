@@ -1,0 +1,24 @@
+{
+  "address": "::",
+  "family": "IPv6",
+  "port": 4000,
+  "server": {
+    "_events": { "connection": [null, null], "request": [null, null] },
+    "_eventsCount": 2,
+    "_connections": 0,
+    "_handle": { "reading": false },
+    "_usingWorkers": false,
+    "_workers": [],
+    "_unref": false,
+    "allowHalfOpen": true,
+    "pauseOnConnect": false,
+    "httpAllowHalfOpen": false,
+    "timeout": 0,
+    "keepAliveTimeout": 5000,
+    "maxHeadersCount": null,
+    "headersTimeout": 60000,
+    "requestTimeout": 0,
+    "_connectionKey": "6::::4000"
+  },
+  "url": "http://localhost:4000/"
+}

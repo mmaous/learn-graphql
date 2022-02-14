@@ -2,6 +2,9 @@ const Person = require('../../../models/person');
 const User = require('../../../models/user');
 const { UserInputError, AuthenticationError } = require('apollo-server');
 const jwt = require('jsonwebtoken');
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -24,6 +27,8 @@ const addPerson = async (root, args, context) => {
       invalidArgs: args,
     });
   }
+
+  pubsub.publish('PERSON_ADDED', { personAdded: person })
   return person;
 };
 
@@ -91,5 +96,6 @@ const addAsFriend = async (root, args, { currentUser }) => {
 
   return currentUser;
 };
+
 
 module.exports = { addPerson, editNumber, createUser, login, addAsFriend };
