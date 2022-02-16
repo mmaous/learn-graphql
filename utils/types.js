@@ -1,4 +1,4 @@
-const { UserInputError, gql } = require('apollo-server');
+const { gql } = require('apollo-server');
 
 //* Types/Schema
 const typeDefs = gql`

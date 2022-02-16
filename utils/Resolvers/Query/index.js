@@ -1,5 +1,4 @@
 const Person = require('../../../models/person');
-const { UserInputError } = require('apollo-server');
 
 const personCount = () => Person.collection.countDocuments();
 
