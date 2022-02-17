@@ -1,36 +1,38 @@
-const Person = require('../../../models/person');
-const User = require('../../../models/user');
+const Person = require('../../models/person');
+const User = require('../../models/user');
 const { UserInputError, AuthenticationError } = require('apollo-server');
 const jwt = require('jsonwebtoken');
 const { PubSub } = require('graphql-subscriptions');
 
-const pubsub = new PubSub();
+// const pubsub = new PubSub();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const addPerson = async (root, args, context) => {
-  const person = new Person({ ...args });
-  const currentUser = context.currentUser;
+// const addPerson = async (root, args, context) => {
+//   const person = new Person({ ...args });
+//   const currentUser = context.currentUser;
 
-  if (!currentUser) {
-    throw new AuthenticationError('not authenticated');
-  }
+//   if (!currentUser) {
+//     throw new AuthenticationError('not authenticated');
+//   }
 
-  try {
-    const user = await User.findOne({ username: currentUser.username });
-    console.log(user);
-    await person.save();
-    user.friends = user.friends.concat(person);
-    await user.save();
-  } catch (error) {
-    throw new UserInputError(error.message, {
-      invalidArgs: args,
-    });
-  }
+//   try {
+//     const user = await User.findOne({ username: currentUser.username });
+//     console.log(user);
+//     await person.save();
+//     user.friends = user.friends.concat(person);
+//     await user.save();
+//   } catch (error) {
+//     throw new UserInputError(error.message, {
+//       invalidArgs: args,
+//     });
+//   }
+  
+//   pubsub.publish('PERSON_ADDED', { personAdded: person });
 
-  pubsub.publish('PERSON_ADDED', { personAdded: person })
-  return person;
-};
+
+//   return person;
+// };
 
 const editNumber = async (root, args) => {
   const person = await Person.findOne({ name: args.name });
@@ -81,7 +83,6 @@ const login = async (root, args) => {
 };
 
 const addAsFriend = async (root, args, { currentUser }) => {
-
   const nonFriendAlready = (person) =>
     !currentUser.friends.map((f) => f._id).includes(person._id);
   if (!currentUser) {
@@ -97,5 +98,4 @@ const addAsFriend = async (root, args, { currentUser }) => {
   return currentUser;
 };
 
-
-module.exports = { addPerson, editNumber, createUser, login, addAsFriend };
+module.exports = { /* addPerson, */ editNumber, createUser, login, addAsFriend };

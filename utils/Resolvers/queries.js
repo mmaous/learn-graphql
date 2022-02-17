@@ -1,4 +1,4 @@
-const Person = require('../../../models/person');
+const Person = require('../../models/person');
 
 const personCount = () => Person.collection.countDocuments();
 
