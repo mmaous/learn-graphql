@@ -1,10 +1,9 @@
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
 import Persons from './components/Persons';
 import PersonForm from './components/PersonForm';
 import React, { useCallback, useState } from 'react';
-import { ALL_PERSONS } from './queries';
+import { ALL_PERSONS, PERSON_ADDED } from './queries';
 
-import './App.css';
 import PhoneForm from './components/PhoneForm';
 import LoginForm from './components/LoginForm';
 
@@ -15,7 +14,12 @@ const App = () => {
   );
   const result = useQuery(ALL_PERSONS);
   const { resetStore } = useApolloClient();
-  
+
+  useSubscription(PERSON_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
+    },
+  });
 
   const notify = useCallback((message) => {
     setErrorMessage(message);
@@ -42,7 +46,6 @@ const App = () => {
     setToken(null);
     localStorage.clear();
     resetStore(); //  reset the cache
-
   };
   return (
     <div className='App'>
