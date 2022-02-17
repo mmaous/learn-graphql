@@ -6,6 +6,7 @@ import { ALL_PERSONS, PERSON_ADDED } from './queries';
 
 import PhoneForm from './components/PhoneForm';
 import LoginForm from './components/LoginForm';
+import { updateCache } from './utils';
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -13,11 +14,14 @@ const App = () => {
     localStorage.getItem('phonenumbers-user-token'),
   );
   const result = useQuery(ALL_PERSONS);
-  const { resetStore } = useApolloClient();
+  const { resetStore, cache } = useApolloClient();
 
   useSubscription(PERSON_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData);
+      const addedPerson = subscriptionData.data.personAdded;
+      notify(`${addedPerson.name} added`);
+
+      updateCache(cache, { query: ALL_PERSONS }, addedPerson )
     },
   });
 

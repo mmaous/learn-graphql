@@ -1,12 +1,14 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useApolloClient } from '@apollo/client';
 import React, { useState } from 'react';
 import { ALL_PERSONS, CREATE_PERSON } from '../queries';
+import { updateCache } from '../utils';
 
 const PersonForm = ({ setError }) => {
   const [name, setName] = useState('Jimes');
   const [phone, setPhone] = useState('3242-445-422');
   const [street, setStreet] = useState('21 st Gzrfield ');
   const [city, setCity] = useState('New York');
+  const client = useApolloClient();
 
   const [createPerson] = useMutation(CREATE_PERSON, {
     refetchQueries: [{ query: ALL_PERSONS }],
@@ -14,15 +16,9 @@ const PersonForm = ({ setError }) => {
       setError(error.graphQLErrors[0].message);
     },
     update: (store, response) => {
+
       try {
-        const dataInStore = store.readQuery({ query: ALL_PERSONS });
-        store.writeQuery({
-          query: ALL_PERSONS,
-          data: {
-            ...dataInStore,
-            allPersons: [...dataInStore.allPersons, response.data.addPerson],
-          },
-        });
+        updateCache(client.cache, { query: ALL_PERSONS }, response.data.addPerson);
       } catch (error) {
         console.error(error.message);
       }
